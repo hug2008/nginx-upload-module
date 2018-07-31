@@ -50,3 +50,8 @@ server {
     }
 }
 ```
+
+
+  nginx官方推荐的第三方上传模块nginx-upload-module在nginx-1.3.9后已经不能编译通过，究其原因是因为nginx-1.3.9废弃了ngx_http_request_body_t中的to_write成员指针。
+
+        github上有人解决了这个问题，参考https://github.com/vkholodkov/nginx-upload-module/issues/41的讨论，davromaniak给出了解决方案。但是davromaniak的解决方案有些冗余，而hongzhidao给出更加清晰的解决方案，参考https://github.com/hongzhidao/nginx-upload-module。测试该方案没有问题，但是有个遗留的问题：在上传文件时，必须手动创建/tmp/0~/tmp/9目录，用于存放上传的文件。但是，如果在配置文件中配置upload_store /tmp 1 2 3;时，手动创建目录是很麻烦的，现在我在hongzhidao的基础上解决了这个问题，上传文件时不用手动创建存放上传文件的目录，另外我还修复了代码中限速失效的bug，参考https://github.com/winshining/nginx-upload-module。
